@@ -4,6 +4,13 @@ import React, { Component } from 'react';
 
 export default class Joke extends Component {
 	render() {
-		return <div>Joke</div>;
+		const { joke, lp } = this.props;
+		return (
+			<div>
+				<p>
+					{lp} - {joke.joke} - score: {joke.score}
+				</p>
+			</div>
+		);
 	}
 }
