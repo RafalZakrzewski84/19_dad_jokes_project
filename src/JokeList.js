@@ -11,7 +11,7 @@ const axiosConfig = {
 
 export default class JokeList extends Component {
 	static defaultProps = {
-		numJokesToGet: 10,
+		numJokesToGet: 5,
 	};
 
 	constructor(props) {
@@ -22,28 +22,34 @@ export default class JokeList extends Component {
 	}
 
 	async componentDidMount() {
-		const jokeList = await this.getJokes();
-		this.setState((st) => {
-			return { jokeList: [...st.jokeList, ...jokeList] };
-		});
+		this.getJokes();
 	}
 
 	async getJokes() {
 		const jokeList = [];
-		try {
-			for (let i = 0; i < this.props.numJokesToGet; i++) {
-				const res = await axios.get(dadJokeURL, axiosConfig);
-				if (res.data.status != 200) {
-					throw new Error('Sth. went wrong.');
-				}
-				const resJoke = res.data;
-				const newJoke = { ...resJoke, score: 0 };
-				jokeList.push(newJoke);
-			}
-		} catch (error) {
-			console.log(error);
+		while (jokeList.length < this.props.numJokesToGet) {
+			const res = await axios.get(dadJokeURL, axiosConfig);
+			const joke = res.data;
+			const newJoke = { ...joke, score: 0 };
+			jokeList.push(newJoke);
 		}
-		return jokeList;
+		this.setState((st) => {
+			return { jokeList: [...st.jokeList, ...jokeList] };
+		});
+		// try {
+		// 	for (let i = 0; i < this.props.numJokesToGet; i++) {
+		// 		const res = await axios.get(dadJokeURL, axiosConfig);
+		// 		if (res.data.status != 200) {
+		// 			throw new Error('Sth. went wrong.');
+		// 		}
+		// 		const resJoke = res.data;
+		// 		const newJoke = { ...resJoke, score: 0 };
+		// 		jokeList.push(newJoke);
+		// 	}
+		// } catch (error) {
+		// 	console.log(error);
+		// }
+		// return jokeList;
 	}
 
 	render() {
