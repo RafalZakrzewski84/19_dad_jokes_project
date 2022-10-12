@@ -1,5 +1,20 @@
 /** @format */
+* {
+	margin: 0;
+	padding: 0;
+}
 
 .App {
-	text-align: center;
+	font-family: 'Roboto', sans-serif;
+	font-size: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	background: rgb(146, 236, 255);
+	background: linear-gradient(
+		135deg,
+		rgba(146, 236, 255, 1) 47%,
+		rgba(255, 128, 214, 1) 47%
+	);
 }

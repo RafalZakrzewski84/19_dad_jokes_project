@@ -11,7 +11,7 @@ const axiosConfig = {
 
 export default class JokeList extends Component {
 	static defaultProps = {
-		numJokesToGet: 5,
+		numJokesToGet: 15,
 	};
 
 	constructor(props) {
@@ -31,25 +31,14 @@ export default class JokeList extends Component {
 			const res = await axios.get(dadJokeURL, axiosConfig);
 			const joke = res.data;
 			const newJoke = { ...joke, score: 0 };
-			jokeList.push(newJoke);
+			//checking if joke is in list
+			const checkDuplicate = jokeList.filter((joke) => joke.id == newJoke.id);
+			console.log(checkDuplicate.length);
+			if (checkDuplicate.length === 0) jokeList.push(newJoke);
 		}
 		this.setState((st) => {
 			return { jokeList: [...st.jokeList, ...jokeList] };
 		});
-		// try {
-		// 	for (let i = 0; i < this.props.numJokesToGet; i++) {
-		// 		const res = await axios.get(dadJokeURL, axiosConfig);
-		// 		if (res.data.status != 200) {
-		// 			throw new Error('Sth. went wrong.');
-		// 		}
-		// 		const resJoke = res.data;
-		// 		const newJoke = { ...resJoke, score: 0 };
-		// 		jokeList.push(newJoke);
-		// 	}
-		// } catch (error) {
-		// 	console.log(error);
-		// }
-		// return jokeList;
 	}
 
 	render() {
