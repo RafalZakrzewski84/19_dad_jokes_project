@@ -1,12 +1,8 @@
 /** @format */
-* {
-	margin: 0;
-	padding: 0;
-}
-
 .App {
 	font-family: 'Roboto', sans-serif;
 	font-size: 10px;
+	color: #78909c;
 	display: flex;
 	justify-content: center;
 	align-items: center;

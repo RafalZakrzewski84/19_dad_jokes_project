@@ -2,6 +2,9 @@
 
 import React, { Component } from 'react';
 import axios from 'axios';
+
+import './JokeList.css';
+
 import Joke from './Joke';
 
 const dadJokeURL = 'https://icanhazdadjoke.com/';
@@ -11,7 +14,7 @@ const axiosConfig = {
 
 export default class JokeList extends Component {
 	static defaultProps = {
-		numJokesToGet: 15,
+		numJokesToGet: 5,
 	};
 
 	constructor(props) {
@@ -46,9 +49,15 @@ export default class JokeList extends Component {
 			<Joke lp={idx + 1} key={joke.id} joke={joke} />
 		));
 		return (
-			<div>
-				<h2>Joke List</h2>
-				{jokeListRender}
+			<div className="JokeList">
+				<div className="JokeList-sidebar">
+					<h1 className="JokeList-title">
+						<span>DAD</span> Jokes
+					</h1>
+					<img src="https://assets.dryicons.com/uploads/icon/svg/8927/0eb14c71-38f2-433a-bfc8-23d9c99b3647.svg"></img>
+					<button className="JokeList-getmore">New Jokes</button>
+				</div>
+				<div className="JokeList-jokes">{jokeListRender}</div>
 			</div>
 		);
 	}
