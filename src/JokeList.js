@@ -22,8 +22,6 @@ export default class JokeList extends Component {
 		this.state = {
 			jokeList: [],
 		};
-		this.increaseScore = this.increaseScore.bind(this);
-		this.decreaseScore = this.decreaseScore.bind(this);
 	}
 
 	componentDidMount() {
@@ -45,25 +43,12 @@ export default class JokeList extends Component {
 		});
 	}
 
-	increaseScore(jokeId) {
+	changeScore(jokeId, delta) {
 		const newJokeList = this.state.jokeList.map((joke) => {
 			if (joke.id === jokeId) {
 				return {
 					...joke,
-					score: joke.score + 1,
-				};
-			}
-			return joke;
-		});
-		this.setState({ jokeList: newJokeList });
-	}
-
-	decreaseScore(jokeId) {
-		const newJokeList = this.state.jokeList.map((joke) => {
-			if (joke.id === jokeId) {
-				return {
-					...joke,
-					score: joke.score - 1,
+					score: joke.score + delta,
 				};
 			}
 			return joke;
@@ -76,8 +61,8 @@ export default class JokeList extends Component {
 			<Joke
 				key={joke.id}
 				joke={joke}
-				onIncreaseScore={this.increaseScore}
-				onDecreaseScore={this.decreaseScore}
+				onIncreaseScore={() => this.changeScore(joke.id, 1)}
+				onDecreaseScore={() => this.changeScore(joke.id, -1)}
 			/>
 		));
 		return (
