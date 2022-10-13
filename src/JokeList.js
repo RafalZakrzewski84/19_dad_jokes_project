@@ -22,9 +22,11 @@ export default class JokeList extends Component {
 		this.state = {
 			jokeList: [],
 		};
+		this.increaseScore = this.increaseScore.bind(this);
+		this.decreaseScore = this.decreaseScore.bind(this);
 	}
 
-	async componentDidMount() {
+	componentDidMount() {
 		this.getJokes();
 	}
 
@@ -34,9 +36,8 @@ export default class JokeList extends Component {
 			const res = await axios.get(dadJokeURL, axiosConfig);
 			const joke = res.data;
 			const newJoke = { ...joke, score: 0 };
-			//checking if joke is in list
+			//checking if joke is on the list
 			const checkDuplicate = jokeList.filter((joke) => joke.id == newJoke.id);
-			console.log(checkDuplicate.length);
 			if (checkDuplicate.length === 0) jokeList.push(newJoke);
 		}
 		this.setState((st) => {
@@ -44,9 +45,40 @@ export default class JokeList extends Component {
 		});
 	}
 
+	increaseScore(jokeId) {
+		const newJokeList = this.state.jokeList.map((joke) => {
+			if (joke.id === jokeId) {
+				return {
+					...joke,
+					score: joke.score + 1,
+				};
+			}
+			return joke;
+		});
+		this.setState({ jokeList: newJokeList });
+	}
+
+	decreaseScore(jokeId) {
+		const newJokeList = this.state.jokeList.map((joke) => {
+			if (joke.id === jokeId) {
+				return {
+					...joke,
+					score: joke.score - 1,
+				};
+			}
+			return joke;
+		});
+		this.setState({ jokeList: newJokeList });
+	}
+
 	render() {
-		const jokeListRender = this.state.jokeList.map((joke, idx) => (
-			<Joke lp={idx + 1} key={joke.id} joke={joke} />
+		const jokeListRender = this.state.jokeList.map((joke) => (
+			<Joke
+				key={joke.id}
+				joke={joke}
+				onIncreaseScore={this.increaseScore}
+				onDecreaseScore={this.decreaseScore}
+			/>
 		));
 		return (
 			<div className="JokeList">
