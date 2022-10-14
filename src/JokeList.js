@@ -21,6 +21,7 @@ export default class JokeList extends Component {
 		super(props);
 		this.state = {
 			jokeList: JSON.parse(window.localStorage.getItem('jokeList')) || [],
+			loading: false,
 		};
 		this.handleClick = this.handleClick.bind(this);
 	}
@@ -30,21 +31,30 @@ export default class JokeList extends Component {
 	}
 
 	async getJokes() {
+		//setting loader to show
+		this.setState({ loading: true });
 		const jokeList = [];
 		while (jokeList.length < this.props.numJokesToGet) {
 			const res = await axios.get(dadJokeURL, axiosConfig);
 			const joke = res.data;
 			const newJoke = { ...joke, score: 0 };
 			//checking if joke is on the list
-			const checkDuplicate = jokeList.filter((joke) => joke.id == newJoke.id);
-			if (checkDuplicate.length === 0) jokeList.push(newJoke);
+			const checkDuplicate = jokeList.filter((joke) => joke.id === newJoke.id);
+			const checkDuplicateInState = this.state.jokeList.filter(
+				(joke) => joke.id === newJoke.id
+			);
+			if (checkDuplicate.length === 0 && checkDuplicateInState.length === 0)
+				jokeList.push(newJoke);
 		}
-		this.setState((st) => {
-			return { jokeList: [...st.jokeList, ...jokeList] };
-		});
-		window.localStorage.setItem(
-			'jokeList',
-			JSON.stringify(this.state.jokeList)
+		this.setState(
+			(st) => {
+				return { jokeList: [...st.jokeList, ...jokeList], loading: false };
+			},
+			() =>
+				window.localStorage.setItem(
+					'jokeList',
+					JSON.stringify(this.state.jokeList)
+				)
 		);
 	}
 
@@ -71,7 +81,8 @@ export default class JokeList extends Component {
 	}
 
 	render() {
-		const jokeListRender = this.state.jokeList.map((joke) => (
+		const { jokeList, loading } = this.state;
+		const jokeListRender = jokeList.map((joke) => (
 			<Joke
 				key={joke.id}
 				joke={joke}
@@ -85,12 +96,22 @@ export default class JokeList extends Component {
 					<h1 className="JokeList-title">
 						<span>DAD</span> Jokes
 					</h1>
-					<img src="https://assets.dryicons.com/uploads/icon/svg/8927/0eb14c71-38f2-433a-bfc8-23d9c99b3647.svg"></img>
+					<img
+						src="https://assets.dryicons.com/uploads/icon/svg/8927/0eb14c71-38f2-433a-bfc8-23d9c99b3647.svg"
+						alt="icon"></img>
 					<button className="JokeList-getmore" onClick={this.handleClick}>
 						New Jokes
 					</button>
 				</div>
-				<div className="JokeList-jokes">{jokeListRender}</div>
+				<div className="JokeList-jokes">
+					{loading ? (
+						<div id="preloader">
+							<div id="loader" />
+						</div>
+					) : (
+						jokeListRender
+					)}
+				</div>
 			</div>
 		);
 	}
