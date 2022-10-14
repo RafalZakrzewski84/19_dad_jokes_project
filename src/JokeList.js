@@ -68,11 +68,13 @@ export default class JokeList extends Component {
 			}
 			return joke;
 		});
-		this.setState({ jokeList: newJokeList }, () =>
-			window.localStorage.setItem(
-				'jokeList',
-				JSON.stringify(this.state.jokeList)
-			)
+		this.setState(
+			{ jokeList: newJokeList.sort((a, b) => b.score - a.score) },
+			() =>
+				window.localStorage.setItem(
+					'jokeList',
+					JSON.stringify(this.state.jokeList)
+				)
 		);
 	}
 
