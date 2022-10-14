@@ -34,28 +34,35 @@ export default class JokeList extends Component {
 		//setting loader to show
 		this.setState({ loading: true });
 		const jokeList = [];
-		while (jokeList.length < this.props.numJokesToGet) {
-			const res = await axios.get(dadJokeURL, axiosConfig);
-			const joke = res.data;
-			const newJoke = { ...joke, score: 0 };
-			//checking if joke is on the list
-			const checkDuplicate = jokeList.filter((joke) => joke.id === newJoke.id);
-			const checkDuplicateInState = this.state.jokeList.filter(
-				(joke) => joke.id === newJoke.id
+		try {
+			while (jokeList.length < this.props.numJokesToGet) {
+				const res = await axios.get(dadJokeURL, axiosConfig);
+				const joke = res.data;
+				const newJoke = { ...joke, score: 0 };
+				//checking if joke is on the list
+				const checkDuplicate = jokeList.filter(
+					(joke) => joke.id === newJoke.id
+				);
+				const checkDuplicateInState = this.state.jokeList.filter(
+					(joke) => joke.id === newJoke.id
+				);
+				if (checkDuplicate.length === 0 && checkDuplicateInState.length === 0)
+					jokeList.push(newJoke);
+			}
+			this.setState(
+				(st) => {
+					return { jokeList: [...st.jokeList, ...jokeList], loading: false };
+				},
+				() =>
+					window.localStorage.setItem(
+						'jokeList',
+						JSON.stringify(this.state.jokeList)
+					)
 			);
-			if (checkDuplicate.length === 0 && checkDuplicateInState.length === 0)
-				jokeList.push(newJoke);
+		} catch (error) {
+			console.log(error);
+			this.setState({ loading: false });
 		}
-		this.setState(
-			(st) => {
-				return { jokeList: [...st.jokeList, ...jokeList], loading: false };
-			},
-			() =>
-				window.localStorage.setItem(
-					'jokeList',
-					JSON.stringify(this.state.jokeList)
-				)
-		);
 	}
 
 	changeScore(jokeId, delta) {
